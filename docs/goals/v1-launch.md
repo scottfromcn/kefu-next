@@ -41,3 +41,4 @@
 已知限制：①单进程 SQLite 并发写入有限 ②无鉴权 ③LLM 单轮无上下文记忆
 下一期 goal 建议：会话上下文记忆 / 流式回答 / 鉴权与用量统计
 
+- 关联 intent：docs/intents/INT-20260916-01-kefu-next-launch.md（accepted）
