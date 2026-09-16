@@ -1,0 +1,4 @@
+interface:
+  display_name: "SZ-MTR Code"
+  short_description: "Implement approved project changes"
+  default_prompt: "Use $sz-mtr-project-code to implement the approved plan."

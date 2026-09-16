@@ -1,0 +1,4 @@
+interface:
+  display_name: "SZ-MTR Spec"
+  short_description: "Clarify project specs before planning"
+  default_prompt: "Use $sz-mtr-project-spec to turn my request into a project spec."

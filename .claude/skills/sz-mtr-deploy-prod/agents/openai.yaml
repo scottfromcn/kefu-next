@@ -1,0 +1,4 @@
+interface:
+  display_name: "SZ-MTR Deploy Prod"
+  short_description: "Promote tested artifact to production"
+  default_prompt: "Use $sz-mtr-deploy-prod to deploy the approved release to production."

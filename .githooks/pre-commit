@@ -1,0 +1,34 @@
+#!/bin/bash
+# pre-commit 守门：格式 / 密钥 / 任务号（agent-sdlc 步骤 19）
+# 安装：scripts/install-hooks.sh（git config core.hooksPath .githooks）
+
+set -u
+staged=$(git diff --cached --name-only)
+fail() { echo "❌ pre-commit: $1"; exit 1; }
+
+# 1. 密钥扫描
+if git diff --cached | grep -nE '(sk-[A-Za-z0-9]{16,}|BEGIN (RSA |EC )?PRIVATE KEY|password\s*=\s*["'"'"'][^"'"'"']+|api_key\s*=\s*["'"'"'][^"'"'"']+)' | grep -v 'example'; then
+  fail "staged diff 疑似含密钥/密码——移除后重试（example 文件除外）"
+fi
+
+# 2. 环境文件不许进库
+echo "$staged" | grep -E '^(\.env|.*\.env)$' | grep -v example >/dev/null && fail ".env 不许提交（只允许 *.example）"
+
+# 3. 大文件
+for f in $staged; do
+  [ -f "$f" ] && [ "$(stat -f%z "$f" 2>/dev/null || echo 0)" -gt 5242880 ] && fail "$f 超过 5MB，大文件走 LFS 或对象存储"
+done
+
+# 4. python 语法
+py=$(echo "$staged" | grep '\.py$' || true)
+[ -n "$py" ] && ! python3 -m py_compile $py 2>/dev/null && fail "python 语法错误：先跑 local-check"
+
+# 5. 分支/提交绑任务号（feature/INT-yyyymmdd-nn-* 或 commit message 带 INT-）
+branch=$(git rev-parse --abbrev-ref HEAD)
+msg_heads=$(git log origin/main..HEAD --format=%s 2>/dev/null | head -20)
+if [[ "$branch" == feature/* ]] && ! echo "$branch $(git log -1 --format=%s)" | grep -qE 'INT-[0-9]{8}'; then
+  echo "⚠️ 分支/提交未绑意图号 INT-<yyyymmdd>-<seq>（纯文档/修复可 --no-verify 跳过并在 worklog 注明）"
+fi
+
+echo "✅ pre-commit passed"
+exit 0

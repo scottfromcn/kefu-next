@@ -1,0 +1,4 @@
+interface:
+  display_name: "SZ-MTR Deploy Test"
+  short_description: "Deploy main branch to test"
+  default_prompt: "Use $sz-mtr-deploy-test to deploy the latest main branch to test."

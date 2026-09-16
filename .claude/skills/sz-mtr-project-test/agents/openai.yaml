@@ -1,0 +1,4 @@
+interface:
+  display_name: "SZ-MTR Test"
+  short_description: "Run validation and acceptance checks"
+  default_prompt: "Use $sz-mtr-project-test to validate the current project changes."
